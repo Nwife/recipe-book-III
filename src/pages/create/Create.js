@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useHistory } from 'react-router';
-import { useFetch } from '../../hooks/useFetch';
+import { projectFirestore } from '../../firebase/config';
 
 //styles
 import './Create.css';
@@ -14,15 +14,23 @@ export default function Create() {
     const ingredientInput = useRef(null);
     const history = useHistory();
 
-    const {postData, data, error} = useFetch('http://localhost:8000/recipes', 'POST');
+   
  
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        postData({title, ingredients, method, cookingTime: cookingTime + ' minutes'})
+        const doc = {title, ingredients, method, cookingTime: cookingTime + ' minutes'};
+
+        try{
+            await projectFirestore.collection('recipes').add(doc)   //add is a method that generates a new document inside the collection for us //we are awaiting cause it's an async process and we want to make sure it's completed before being redirected back to the home page
+            history.push('/');
+        } catch(err){
+            console.log(err);
+        }
+       
         console.log(title, method, cookingTime, ingredients);
     }
 
-    const handleAdd = (e) => {
+    const handleAdd = (e) => { //adds a new ingredient to the ingredients array
         e.preventDefault()
         const ing = newIngredient.trim() //trim removes white space
         if (ing && !ingredients.includes(ing)){
@@ -31,13 +39,6 @@ export default function Create() {
         setNewIngredient("");
         ingredientInput.current.focus();
     }
-
-    //redirect the user when we get a response
-    useEffect(() => {
-        if (data){
-            history.push("/");
-        }
-    }, [data, history])
     
     return (
         <div className='create'>
