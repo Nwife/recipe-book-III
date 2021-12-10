@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router';
 import { useFetch } from '../../hooks/useFetch';
+import { projectFirestore } from '../../firebase/config';
 
 //styles
 import './Search.css'

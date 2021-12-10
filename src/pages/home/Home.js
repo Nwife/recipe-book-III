@@ -16,9 +16,9 @@ export default function Home() {
     useEffect(() => {
       setIsPending(true);
 
-      projectFirestore.collection('recipes')   //connects to a collection in our firestore app that we created
-        .get()  //gets all the data from that collection (its an asynchronous operation that returns a promise)
-        .then((snapshot) => {   //snapshot is a recent copy of the data in the collection
+      const unsub = projectFirestore.collection('recipes')                                    //connects to a collection in our firestore app that we created
+            .onSnapshot         //used for realtime data collection  //snapshot returns a snapshot of the collection anytime a process occurz, it takes two arguments: a function, and an error function                                     //gets all the data from that collection (its an asynchronous operation that returns a promise)
+            ((snapshot) => {                                                         //snapshot is a recent copy of the data in the collection
             if(snapshot.empty){
                 setError('No recipes to load');
                 setIsPending(false);
@@ -30,10 +30,12 @@ export default function Home() {
                 setData(results);
                 setIsPending(false);
             }
-        }).catch(err => {
+        }, (err) => {
             setError(err.message);
             setIsPending(false);
         })
+
+        return () => unsub();
     
     }, [])
 
