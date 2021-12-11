@@ -20,8 +20,8 @@ export default function Recipe() {
         setIsPending(true);
 
         //doc is a method which accepts the id of a document in a collection
-        projectFirestore.collection('recipes').doc(id).get()    
-        .then((doc) => { 
+        const unsub = projectFirestore.collection('recipes').doc(id)//.get().then
+        .onSnapshot((doc) => { 
             if(doc.exists){
                 setIsPending(false);
                 setRecipe(doc.data());
@@ -30,7 +30,15 @@ export default function Recipe() {
                 setError('Could not find that recipe');
             }
         })  
+
+        return () => unsub();
     }, [id])
+
+    const handleClick = () => {
+        projectFirestore.collection('recipes').doc(id).update({ //updates the ui
+            title: 'Something New'
+        })
+    }
 
     return (
         <div className={`recipe ${mode}`}>
@@ -44,6 +52,7 @@ export default function Recipe() {
                         {recipe.ingredients.map(ing => <li key={ing}>{ing}</li>)}
                     </ul>
                     <p className="method">{recipe.method}</p>
+                    <button onClick={handleClick}>Update recipe</button>
                 </>
             )}
         </div>
