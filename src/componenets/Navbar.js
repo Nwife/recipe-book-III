@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/useTheme';
 //styles
 import './Navbar.css';
 
-import Searchbar from './Searchbar';
+// import Searchbar from './Searchbar';
 
 export default function Navbar() {
     const { color } = useTheme(); //gets the color property from the useTheme() customhook which wraps the useContext()hook
@@ -14,7 +14,7 @@ export default function Navbar() {
                 <Link to="/" className="brand">
                     <h1>Recipe Book</h1>
                 </Link>
-                <Searchbar />
+                {/* <Searchbar /> */}
                 <Link to="/create">Create Recipe</Link>
             </nav>
         </div>
